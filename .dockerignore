@@ -1,0 +1,8 @@
+node_modules
+dist
+.npm-local-cache
+.git
+.dockerignore
+Dockerfile
+docker-compose.yml
+README.md
