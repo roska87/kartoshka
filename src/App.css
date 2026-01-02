@@ -158,11 +158,68 @@ input:focus {
 .phrase {
   font-size: 1.5rem;
   font-weight: 400;
+  margin-bottom: 30px;
 }
 
 .phrase span {
   color: var(--accent);
   font-weight: 600;
+}
+
+.history-section {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.history-section h3 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  opacity: 0.7;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.history-list {
+  list-style: none;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.95rem;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.h-name {
+  font-weight: 600;
+  color: var(--primary-light);
+}
+
+.h-time {
+  opacity: 0.5;
+  font-size: 0.8rem;
+}
+
+.empty-history {
+  opacity: 0.5;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.debug-notice {
+  margin-top: 20px;
+  font-size: 0.8rem;
+  color: var(--accent);
+  opacity: 0.8;
 }
 
 /* Entrance Animations */

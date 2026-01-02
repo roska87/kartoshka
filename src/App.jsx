@@ -1,15 +1,54 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createClient } from '@supabase/supabase-js'
 import './App.css'
+
+// Initialize Supabase client
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const supabase = (supabaseUrl && supabaseAnonKey) ? createClient(supabaseUrl, supabaseAnonKey) : null
 
 function App() {
   const [name, setName] = useState('')
   const [screen, setScreen] = useState('form') // 'form' or 'eating'
+  const [history, setHistory] = useState([])
+  const [loadingHistory, setLoadingHistory] = useState(false)
 
-  const handleContinue = (e) => {
-    e.preventDefault()
-    if (name.trim()) {
-      setScreen('eating')
+  // Fetch history from Supabase
+  const fetchHistory = async () => {
+    if (!supabase) return
+    setLoadingHistory(true)
+    const { data, error } = await supabase
+      .from('history')
+      .select('name, created_at')
+      .order('created_at', { ascending: false })
+      .limit(5)
+
+    if (!error) {
+      setHistory(data)
     }
+    setLoadingHistory(false)
+  }
+
+  useEffect(() => {
+    if (screen === 'eating') {
+      fetchHistory()
+    }
+  }, [screen])
+
+  const handleContinue = async (e) => {
+    e.preventDefault()
+    if (!name.trim()) return
+
+    // Save to Supabase history
+    if (supabase) {
+      try {
+        await supabase.from('history').insert([{ name: name.trim() }])
+      } catch (err) {
+        console.error('Error saving to history:', err)
+      }
+    }
+
+    setScreen('eating')
   }
 
   const handleReset = () => {
@@ -40,6 +79,9 @@ function App() {
               Continuar
             </button>
           </form>
+          {(!supabaseUrl || !supabaseAnonKey) && (
+            <p className="debug-notice">⚠️ Configura tu .env para usar la base de datos</p>
+          )}
         </div>
       ) : (
         <div className="card action-screen fade-in">
@@ -52,6 +94,25 @@ function App() {
           <h2 className="phrase">
             <span>{name}</span> se come la картошка
           </h2>
+
+          <div className="history-section">
+            <h3>Últimos comedores:</h3>
+            {loadingHistory ? (
+              <p>Cargando...</p>
+            ) : history.length > 0 ? (
+              <ul className="history-list">
+                {history.map((item, idx) => (
+                  <li key={idx} className="history-item">
+                    <span className="h-name">{item.name}</span>
+                    <span className="h-time">{new Date(item.created_at).toLocaleTimeString()}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="empty-history">¡Sé el primero en comer una papa!</p>
+            )}
+          </div>
+
           <button onClick={handleReset} className="btn-secondary">
             Probar otro nombre
           </button>
