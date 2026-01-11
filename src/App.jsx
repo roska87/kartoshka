@@ -104,7 +104,7 @@ function App() {
                 {history.map((item, idx) => (
                   <li key={idx} className="history-item">
                     <span className="h-name">{item.name}</span>
-                    <span className="h-time">{new Date(item.created_at).toLocaleTimeString()}</span>
+                    <span className="h-time">{new Date(item.created_at).toLocaleString()}</span>
                   </li>
                 ))}
               </ul>
